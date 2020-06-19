@@ -1,4 +1,7 @@
 package com.example.pong;
 
-public class Ball {
+import android.graphics.RectF;
+
+class Ball {
+    
 }

@@ -1,4 +1,4 @@
 package com.example.pong;
 
-public class Bat {
+class Bat {
 }
