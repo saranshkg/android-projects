@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
@@ -65,15 +66,50 @@ class PongGame extends SurfaceView implements Runnable {
         mPaint = new Paint();
 
         // Initialize the bat and ball
+        mBall =  new Ball(mScreenX);
+        mBat = new Bat(mScreenX, mScreenY);
 
         // Everything is ready so start the game
         startNewGame();
 
     }
 
+    // Handle all the screen touches
+    @Override
+    public boolean onTouchEvent(MotionEvent motionEvent) {
+        // This switch block replaces the if statement from the Sub Hunter game
+        switch(motionEvent.getAction() & MotionEvent.ACTION_MASK) {
+            // The player has put their finger on the screen
+            case MotionEvent.ACTION_DOWN:
+                // If the game was paused unpause
+                mPaused = false;
+
+                // Where did the touch happen
+                if(motionEvent.getX() > mScreenX/2) {
+                    // On the right hand side
+                    mBat.setMovementState(mBat.RIGHT);
+                }
+                else {
+                    // On the left hand side
+                    mBat.setMovementState(mBat.LEFT);
+                }
+                break;
+
+            // This player lifted their finger from anywhere on screen.
+            // It is possible to create bugs by using multiple fingers.
+            // We will use more complicated and robust touch handling in later projects
+            case MotionEvent.ACTION_UP:
+                // Stop the bat moving
+                mBat.setMovementState(mBat.STOPPED);
+                break;
+        }
+        return true;
+    }
+
     // The player has just lost or is starting their first game
     private void startNewGame() {
         // Put the ball back to the starting position
+        mBall.reset(mScreenX, mScreenY);
 
         // Reset the score and the player's chances
         mScore = 0;
@@ -116,6 +152,8 @@ class PongGame extends SurfaceView implements Runnable {
 
     private void update() {
         // Update the bat and the ball
+        mBall.update(mFPS);
+        mBat.update(mFPS);
     }
 
     private void detectCollisions() {
@@ -167,6 +205,8 @@ class PongGame extends SurfaceView implements Runnable {
             mPaint.setColor(Color.argb(255, 255, 255, 255));
 
             // Draw the bat and ball
+            mCanvas.drawRect(mBall.getRect(), mPaint);
+            mCanvas.drawRect(mBat.getRect(), mPaint);
 
             // Choose the font size
             mPaint.setTextSize(mFontSize);
