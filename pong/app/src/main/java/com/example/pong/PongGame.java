@@ -188,7 +188,7 @@ class PongGame extends SurfaceView implements Runnable {
             }
 
             // The movement has been handled and collisions detected, now we can draw the scene
-            draw();
+            draw(); // Happens asynchronously
 
             // How long did this frame/loop take?
             // Store the answer in timeThisFrame
@@ -198,7 +198,7 @@ class PongGame extends SurfaceView implements Runnable {
             if (timeThisFrame > 0) {
                 // Store the current frame rate in mFPS
                 // ready to pass to the update methods of mBat and mBall next frame/loop
-                mFPS = MILLIS_IN_SECOND / timeThisFrame;
+                mFPS = MILLIS_IN_SECOND / timeThisFrame; // How do we know it'll be upto 60?
             }
         }
     }
