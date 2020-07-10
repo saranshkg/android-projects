@@ -174,8 +174,8 @@ public class SnakeGame extends SurfaceView implements Runnable{
                 mPaint.setTextSize(250);
 
                 // Draw the message
-                // We will give this an international upgrade soon
-                mCanvas.drawText("Tap to Play", 200, 700, mPaint);
+                mCanvas.drawText(getResources().getString(R.string.tap_to_play), 200, 700, mPaint);
+
             }
 
             // Unlock the Canvas to show graphics for this frame
