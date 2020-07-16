@@ -90,6 +90,7 @@ public class SnakeGame extends SurfaceView implements Runnable{
         mPaint = new Paint();
 
         // Call the constructors of our two game objects
+        mApple = new Apple(context, new Point(NUM_BLOCKS_WIDE, mNumBlocksHigh), blockSize);
     }
 
     // Called to start a new game
@@ -97,6 +98,7 @@ public class SnakeGame extends SurfaceView implements Runnable{
         // Reset the snake
 
         // Get the apple ready for dinner
+        mApple.spawn();
 
         // Reset the mScore
         mScore = 0;
@@ -166,6 +168,12 @@ public class SnakeGame extends SurfaceView implements Runnable{
             mCanvas.drawText("" + mScore, 20, 120, mPaint);
 
             // Draw the apple and the snake
+            /*As you can see we pass in references to the Canvas and Paint objects. Here we see
+            how references are very useful because the draw method of the Apple class will be
+            using the exact same Canvas and Paint as the draw method in the SnakeGame class
+            because when you pass a reference you give the receiving class direct access to the
+            very same instances in memory.*/
+            mApple.draw(mCanvas, mPaint);
 
             // Draw some text while paused
             if(mPaused) {
