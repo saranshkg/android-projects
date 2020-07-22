@@ -91,11 +91,13 @@ public class SnakeGame extends SurfaceView implements Runnable{
 
         // Call the constructors of our two game objects
         mApple = new Apple(context, new Point(NUM_BLOCKS_WIDE, mNumBlocksHigh), blockSize);
+        mSnake = new Snake(context, new Point(NUM_BLOCKS_WIDE, mNumBlocksHigh), blockSize);
     }
 
     // Called to start a new game
     public void newGame() {
         // Reset the snake
+        mSnake.reset(NUM_BLOCKS_WIDE, mNumBlocksHigh);
 
         // Get the apple ready for dinner
         mApple.spawn();
@@ -145,10 +147,26 @@ public class SnakeGame extends SurfaceView implements Runnable{
     // Update all the game objects
     public void update() {
         // Move the snake
+        mSnake.move();
 
         // Did the head of the snake eat the apple?
+        if(mSnake.checkDinner(mApple.getLocation())) {
+            mApple.spawn();
+
+            // Add to mScore
+            mScore++;
+
+            // Play a sound
+            mSP.play(mEat_ID, 1, 1, 0, 0, 1);
+        }
 
         // Did the snake die?
+        if(mSnake.detectDeath()) {
+            // Pause the game ready to start again
+            mSP.play(mCrashID, 1, 1, 0, 0, 1);
+
+            mPaused = true;
+        }
     }
 
     // Do all the drawing
@@ -168,12 +186,8 @@ public class SnakeGame extends SurfaceView implements Runnable{
             mCanvas.drawText("" + mScore, 20, 120, mPaint);
 
             // Draw the apple and the snake
-            /*As you can see we pass in references to the Canvas and Paint objects. Here we see
-            how references are very useful because the draw method of the Apple class will be
-            using the exact same Canvas and Paint as the draw method in the SnakeGame class
-            because when you pass a reference you give the receiving class direct access to the
-            very same instances in memory.*/
-            mApple.draw(mCanvas, mPaint);
+            mApple.draw(mCanvas, mPaint);   // Reference to Canvas and Paint objects are passed -
+            mSnake.draw(mCanvas, mPaint);   // Gives the receiving class direct access to the very same instances in memory
 
             // Draw some text while paused
             if(mPaused) {
@@ -204,7 +218,7 @@ public class SnakeGame extends SurfaceView implements Runnable{
                 }
 
                 // Let the Snake class handle the input
-
+                mSnake.switchHeading(motionEvent);
                 break;
             default:
                     break;
